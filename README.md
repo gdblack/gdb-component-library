@@ -1,73 +1,80 @@
-# React + TypeScript + Vite
+# gdb-component-library
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+gdb-component-library is a small, custom React + TypeScript component library built with Vite. The components in this repo are intended to be consumed by other projects (for example, a demo application) via npm or local installation during development.
 
-Currently, two official plugins are available:
+Package info
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Package name: `gdb-component-library` (see `package.json`)
+- Version: `0.0.0` (update before publishing)
+- Note: `package.json` currently sets `"private": true`. Set this to `false` and bump the version to publish to the npm registry.
 
-## React Compiler
+What this repo contains
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Reusable React components under `src/` (for example `src/components/Button`).
+- An entry point `src/index.ts` which exports components and types.
+- Build scripts in `package.json` that output distributable files to `dist/`.
 
-## Expanding the ESLint configuration
+Install (use in a demo project)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Local (recommended for development):
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+# from your demo project's directory
+npm install ../path/to/gdb-component-library
+# or with yarn
+yarn add ../path/to/gdb-component-library
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Install from npm (after publishing):
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install gdb-component-library
 ```
+
+Install from a Git URL:
+
+```bash
+npm install git+ssh://git@github.com/<owner>/gdb-component-library.git
+```
+
+Build
+
+Run the build script defined in `package.json` (TypeScript build + Vite build):
+
+```bash
+npm run build
+```
+
+The output will be placed in `dist/`, which is what gets published or installed by consumers.
+
+Usage example (in a demo app)
+
+After installing, import components like this:
+
+```tsx
+import React from 'react'
+import { Button } from 'gdb-component-library'
+
+export default function App() {
+  return <Button variant="primary">Click me</Button>
+}
+```
+
+TypeScript consumers can also import types:
+
+```ts
+import type { ButtonProps } from 'gdb-component-library'
+```
+
+Notes
+
+- Peer dependencies: `react`, `react-dom` — the consuming project must provide compatible versions.
+- Entry points: `main`, `module`, and `types` in `package.json` point to built files under `dist/`.
+
+Next steps
+
+- Remove `private: true` in `package.json` and set a release `version` before publishing.
+- Add an `examples/demo` app to the repository to simplify local development and QA.
+- Add CI to build and optionally publish releases.
+
+If you want, I can add a small demo app under `examples/demo` and wire it into the repo for local testing.
