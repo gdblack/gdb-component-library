@@ -1,6 +1,9 @@
 {
-  "name": "gdb-component-library",
-  "private": true,
+  "name": "@gdblack/ui",
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "version": "0.0.0-development",
   "type": "module",
   "main": "./dist/index.js",
