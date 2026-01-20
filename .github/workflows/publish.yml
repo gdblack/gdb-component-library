@@ -1,6 +1,3 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
-
 name: NPM Publish
 
 on:
@@ -8,12 +5,12 @@ on:
     workflows: ['Chromatic']
     types: [completed]
 
+# Minimal top-level permission for checkout (job overrides below anyway)
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   publish:
-    # Only proceed if Chromatic succeeded AND the triggering run was on main
     if: >
       ${{
         github.event.workflow_run.conclusion == 'success' &&
@@ -22,6 +19,13 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    # These are the important ones:
+    permissions:
+      contents: write # push tags / create releases
+      pull-requests: write # optional (semantic-release can comment)
+      issues: write # optional (semantic-release can comment)
+      id-token: write # REQUIRED for Trusted Publishing + provenance (OIDC)
+
     steps:
       - name: Checkout the exact commit that passed Chromatic
         uses: actions/checkout@v4
@@ -29,14 +33,20 @@ jobs:
           ref: ${{ github.event.workflow_run.head_sha }}
           fetch-depth: 0
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 22
           registry-url: https://registry.npmjs.org/
 
-      - run: npm ci
+      - name: Install dependencies
+        run: npm ci
 
-      - run: npm run semantic-release
+      # Optional but recommended by semantic-release recipe
+      - name: Verify registry signatures for dependencies
+        run: npm audit signatures
+
+      - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npx semantic-release
