@@ -46,7 +46,12 @@ jobs:
       - name: Verify registry signatures for dependencies
         run: npm audit signatures
 
-      - name: Release
+      - name: Sanity Check - Show NPM_TOKEN and NODE_AUTH_TOKEN status
+        run: |
+          echo "NPM_TOKEN=${NPM_TOKEN:+set}"
+          echo "NODE_AUTH_TOKEN=${NODE_AUTH_TOKEN:+set}"
+
+      - name: Release to NPM
         run: npx semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
